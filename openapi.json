@@ -1,13 +1,21 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.0",
   "info": {
-    "title": "Default module",
-    "description": "",
+    "title": "Coinscrap Finance API",
+    "description": "API for transactional predictions and COCO services",
     "version": "1.0.0"
   },
+  "servers": [
+    {
+      "url": "https://api.coinscrap.com"
+    }
+  ],
   "tags": [
     {
-      "name": "new"
+      "name": "Authentication"
+    },
+    {
+      "name": "Predictions"
     }
   ],
   "paths": {
@@ -17,7 +25,7 @@
         "deprecated": false,
         "description": "This is the endpoint to create an Oauth2 Access Token to consume the APIs. It is necesary to call this endpoint before invoking the rest of the API.",
         "tags": [
-          "new"
+          "Authentication"
         ],
         "parameters": [],
         "requestBody": {
@@ -100,7 +108,9 @@
         "summary": "Transactional prediction",
         "deprecated": false,
         "description": "This request allows the inference of the COCO transactional predictions. It returns the original transaction enriched with COCO predictions.",
-        "tags": [],
+        "tags": [
+          "Predictions"
+        ],
         "parameters": [
           {
             "name": "cocos",
@@ -321,7 +331,9 @@
         "summary": "Bulk transactional prediction",
         "deprecated": false,
         "description": "This request creates multiple transactional predictions in a single call.",
-        "tags": [],
+        "tags": [
+          "Predictions"
+        ],
         "parameters": [
           {
             "name": "cocos",
@@ -727,7 +739,8 @@
                     "type": "string"
                   },
                   "specialization": {
-                    "type": "null"
+                    "type": "string",
+                    "nullable": true
                   },
                   "merchantName": {
                     "type": "string"
@@ -736,19 +749,23 @@
                     "type": "string"
                   },
                   "phone": {
-                    "type": "null"
+                    "type": "string",
+                    "nullable": true
                   },
                   "address": {
                     "type": "object",
                     "properties": {
                       "address": {
-                        "type": "null"
+                        "type": "string",
+                        "nullable": true
                       },
                       "postalCode": {
-                        "type": "null"
+                        "type": "string",
+                        "nullable": true
                       },
                       "locality": {
-                        "type": "null"
+                        "type": "string",
+                        "nullable": true
                       }
                     },
                     "required": [
@@ -764,37 +781,47 @@
                     "type": "string"
                   },
                   "website": {
-                    "type": "null"
+                    "type": "string",
+                    "nullable": true
                   },
                   "cnae": {
-                    "type": "null"
+                    "type": "string",
+                    "nullable": true
                   },
                   "merchantType": {
-                    "type": "null"
+                    "type": "string",
+                    "nullable": true
                   },
                   "establishment": {
                     "type": "object",
                     "properties": {
                       "administrativeAreaL1": {
-                        "type": "null"
+                        "type": "string",
+                        "nullable": true
                       },
                       "address": {
-                        "type": "null"
+                        "type": "string",
+                        "nullable": true
                       },
                       "postalCode": {
-                        "type": "null"
+                        "type": "string",
+                        "nullable": true
                       },
                       "coordinates": {
-                        "type": "null"
+                        "type": "string",
+                        "nullable": true
                       },
                       "locality": {
-                        "type": "null"
+                        "type": "string",
+                        "nullable": true
                       },
                       "phone": {
-                        "type": "null"
+                        "type": "string",
+                        "nullable": true
                       },
                       "administrativeAreaL2": {
-                        "type": "null"
+                        "type": "string",
+                        "nullable": true
                       }
                     },
                     "required": [
@@ -937,15 +964,6 @@
                     "description": "Método final por el que ha salido la categoría"
                   },
                   "stages": {
-                    "type": [
-                      "string",
-                      "integer",
-                      "boolean",
-                      "array",
-                      "object",
-                      "number",
-                      "null"
-                    ],
                     "description": "Salida por cada paso de la categorización"
                   }
                 },
@@ -1113,10 +1131,12 @@
                 "type": "number"
               },
               "merchantType": {
-                "type": "null"
+                "type": "string",
+                "nullable": true
               },
               "specialization": {
-                "type": "null"
+                "type": "string",
+                "nullable": true
               },
               "specialtyId": {
                 "type": "string"
@@ -1147,7 +1167,8 @@
                     "type": "string"
                   },
                   "coordinates": {
-                    "type": "null"
+                    "type": "string",
+                    "nullable": true
                   },
                   "address": {
                     "type": "string"
@@ -1159,7 +1180,8 @@
                     "type": "string"
                   },
                   "administrativeAreaL2": {
-                    "type": "null"
+                    "type": "string",
+                    "nullable": true
                   },
                   "phone": {
                     "type": "string"
@@ -1192,7 +1214,6 @@
             ]
           }
         },
-        "title": "",
         "required": [
           "categorization",
           "attributes",
@@ -1201,12 +1222,11 @@
       }
     },
     "responses": {
-      "Error response": {
-        "description": "",
+      "ErrorResponse": {
+        "description": "Error response",
         "content": {
           "application/json": {
             "schema": {
-              "title": "",
               "type": "object",
               "properties": {
                 "error_type": {
@@ -1228,7 +1248,6 @@
       }
     }
   },
-  "servers": [],
   "security": [
     {
       "bearer": []
