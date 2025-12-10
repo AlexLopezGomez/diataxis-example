@@ -9,11 +9,7 @@
   "colors": {
     "primary": "#0D9373",
     "light": "#07C983",
-    "dark": "#0D9373",
-    "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
-    }
+    "dark": "#0D9373"
   },
   "topbarCtaButton": {
     "name": "Dashboard",
@@ -22,20 +18,18 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": [
-        "introduction"
-      ]
+      "pages": ["introduction"]
     },
     {
       "group": "API Reference",
-      "pages": [
-        "api-reference"
-      ]
+      "pages": ["api-reference"]
     }
   ],
-  "footerSocials": {
-    "twitter": "https://twitter.com/coinscrap",
-    "github": "https://github.com/coinscrap"
-  },
-  "openapi": "openapi.json"
+  "openapi": "openapi.json",
+  "api": {
+    "baseUrl": "https://api.coinscrap.com",
+    "auth": {
+      "method": "bearer"
+    }
+  }
 }
