@@ -1,391 +1,651 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Coinscrap Finance API",
-    "description": "API for transactional predictions and COCO services",
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "https://api.coinscrap.com"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Authentication"
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Default module",
+        "description": "",
+        "version": "1.0.0"
     },
-    {
-      "name": "Predictions"
-    }
-  ],
-  "paths": {
-    "/oauth/token": {
-      "post": {
-        "summary": "Authentication & authorization (new)",
-        "deprecated": false,
-        "description": "This is the endpoint to create an Oauth2 Access Token to consume the APIs. It is necesary to call this endpoint before invoking the rest of the API.",
-        "tags": [
-          "Authentication"
-        ],
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
+    "tags": [
+        {
+            "name": "new"
+        }
+    ],
+    "paths": {
+        "/oauth/token": {
+            "post": {
+                "summary": "Authentication & authorization (new)",
+                "deprecated": false,
+                "description": "This is the endpoint to create an Oauth2 Access Token to consume the APIs. It is necesary to call this endpoint before invoking the rest of the API.",
+                "tags": [
+                    "new"
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "grant_type": {
+                                        "type": "string",
+                                        "description": "oAuth Grant Type. Use `client_credentials`."
+                                    },
+                                    "client_id": {
+                                        "type": "string"
+                                    },
+                                    "client_secret": {
+                                        "type": "string"
+                                    },
+                                    "audience": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "URL audience for oAuth."
+                                    }
+                                },
+                                "required": [
+                                    "grant_type",
+                                    "client_id",
+                                    "client_secret",
+                                    "audience"
+                                ]
+                            },
+                            "example": {
+                                "client_id": "{{OAUTH_CLIENT_CLIENT_ID}}",
+                                "client_secret": "{{OAUTH_CLIENT_CLIENT_SECRET}}",
+                                "audience": "{{OAUTH_AUDIENCE}}",
+                                "grant_type": "client_credentials"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "type": "number"
+                                        },
+                                        "token_type": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "access_token",
+                                        "expires_in",
+                                        "token_type"
+                                    ]
+                                },
+                                "example": {
+                                    "access_token": "ewogICJhbGciOiAiSFMyNTYiCn0.ewogICJzdWIiOiAiY3JuOnByb2plY3QtbmFtZTpkZXY6dXM6OjpzZXJ2aWNlcy94LXByb2plY3QtbmFtZSIsCiAgImV4cCI6IDE3MjgzMDg3ODcKfQ.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30",
+                                    "expires_in": 3600,
+                                    "token_type": "Bearer"
+                                }
+                            }
+                        },
+                        "headers": {}
+                    }
+                },
+                "security": []
+            }
+        },
+        "/coco/transactional-predictions": {
+            "post": {
+                "summary": "Transactional prediction",
+                "deprecated": false,
+                "description": "This request allows the inference of the COCO transactional predictions. It returns the original transaction enriched with COCO predictions.",
+                "tags": [],
+                "parameters": [
+                    {
+                        "name": "cocos",
+                        "in": "query",
+                        "description": "Requested COCO predictions, comma separated.",
+                        "required": false,
+                        "example": "categorization,merchant",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "identifier": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "accountingDate": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "valueDate": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "amount": {
+                                        "type": "number"
+                                    },
+                                    "balance": {
+                                        "type": "number"
+                                    },
+                                    "currency": {
+                                        "type": "string"
+                                    },
+                                    "categoryId": {
+                                        "type": "string"
+                                    },
+                                    "documentUrl": {
+                                        "type": "string"
+                                    },
+                                    "merchant": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "code": {
+                                                "type": "string"
+                                            },
+                                            "city": {
+                                                "type": "string"
+                                            },
+                                            "country": {
+                                                "type": "string"
+                                            },
+                                            "mcc": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "additionalData": {
+                                        "type": "object",
+                                        "properties": {}
+                                    }
+                                },
+                                "required": [
+                                    "identifier",
+                                    "title",
+                                    "accountingDate",
+                                    "valueDate",
+                                    "amount",
+                                    "balance",
+                                    "currency"
+                                ]
+                            },
+                            "example": {
+                                "title": "7 eleven anaxagoras",
+                                "accountingDate": "2024-09-09T08:10:20.000Z",
+                                "valueDate": "2024-09-09T00:00:00.000Z",
+                                "amount": -36.54,
+                                "balance": 2142.98,
+                                "currency": "PEN",
+                                "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "createDate": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "resolveDate": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "accountingDate": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "valueDate": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "amount": {
+                                            "type": "number"
+                                        },
+                                        "balance": {
+                                            "type": "number"
+                                        },
+                                        "currency": {
+                                            "type": "string"
+                                        },
+                                        "documentUrl": {
+                                            "type": "string"
+                                        },
+                                        "predictions": {
+                                            "$ref": "#/components/schemas/PredictionsResponse"
+                                        }
+                                    },
+                                    "required": [
+                                        "predictions",
+                                        "id",
+                                        "createDate",
+                                        "resolveDate",
+                                        "title",
+                                        "accountingDate",
+                                        "valueDate",
+                                        "amount",
+                                        "balance",
+                                        "currency",
+                                        "documentUrl"
+                                    ]
+                                },
+                                "example": {
+                                    "id": "68efa2c74581d0efe5adedee",
+                                    "createDate": "2025-10-15T13:33:59.760Z",
+                                    "resolveDate": "2025-10-15T13:34:00.136Z",
+                                    "tenantId": "{tenant}",
+                                    "trackId": "df5c7872-715b-4d0c-9185-2269c73f872c",
+                                    "title": "AB SERVICIOS SELECTA",
+                                    "accountingDate": "2024-09-09T08:10:20.000Z",
+                                    "valueDate": "2024-09-09T00:00:00.000Z",
+                                    "amount": -36.54,
+                                    "balance": 2142.98,
+                                    "currency": "PEN",
+                                    "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf",
+                                    "predictions": {
+                                        "categorization": {
+                                            "categoryCode": 5510,
+                                            "category": "automóvil y transporte",
+                                            "subcategory": "gasolineras"
+                                        },
+                                        "merchant": {
+                                            "merchantId": null,
+                                            "merchantName": null,
+                                            "legalName": null,
+                                            "logo": "https://s3.eu-west-3.amazonaws.com/com.coinscrap.dev.coco-merchant-pfm-es.public.common/logos/915f6aad5f9ac88c95935b3b33a23080aad82449c69de731aaf3444ea05989ce.png",
+                                            "favicon": "https://s3.eu-west-3.amazonaws.com/com.coinscrap.dev.coco-merchant-pfm-es.public.common/logos/915f6aad5f9ac88c95935b3b33a23080aad82449c69de731aaf3444ea05989ce.png",
+                                            "hasLogo": false,
+                                            "website": null,
+                                            "phone": null,
+                                            "cnae": null,
+                                            "merchantType": null,
+                                            "specialization": null,
+                                            "specialtyId": null,
+                                            "address": {
+                                                "locality": null,
+                                                "address": null,
+                                                "postalCode": null
+                                            },
+                                            "establishment": {
+                                                "locality": null,
+                                                "coordinates": null,
+                                                "address": null,
+                                                "postalCode": null,
+                                                "administrativeAreaL1": null,
+                                                "administrativeAreaL2": null,
+                                                "phone": null
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "headers": {}
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/coco/transactional-predictions/bulk": {
+            "post": {
+                "summary": "Bulk transactional prediction",
+                "deprecated": false,
+                "description": "This request creates multiple transactional predictions in a single call.",
+                "tags": [],
+                "parameters": [
+                    {
+                        "name": "cocos",
+                        "in": "query",
+                        "description": "Requested COCO predictions, comma separated.",
+                        "required": false,
+                        "example": "categorization,merchant",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "createDate": {
+                                            "type": "string"
+                                        },
+                                        "resolveDate": {
+                                            "type": "string"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "accountingDate": {
+                                            "type": "string"
+                                        },
+                                        "valueDate": {
+                                            "type": "string"
+                                        },
+                                        "amount": {
+                                            "type": "number"
+                                        },
+                                        "balance": {
+                                            "type": "number"
+                                        },
+                                        "currency": {
+                                            "type": "string"
+                                        },
+                                        "documentUrl": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "createDate",
+                                        "resolveDate",
+                                        "title",
+                                        "accountingDate",
+                                        "valueDate",
+                                        "amount",
+                                        "balance",
+                                        "currency",
+                                        "documentUrl"
+                                    ]
+                                }
+                            },
+                            "example": [
+                                {
+                                    "title": "AB SERVICIOS SELECTA",
+                                    "accountingDate": "2024-09-09T08:10:20.000Z",
+                                    "valueDate": "2024-09-09T00:00:00.000Z",
+                                    "amount": -36.54,
+                                    "balance": 2142.98,
+                                    "currency": "PEN",
+                                    "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf"
+                                },
+                                {
+                                    "title": "AB SERVICIOS SELECTA",
+                                    "accountingDate": "2024-09-09T08:10:20.000Z",
+                                    "valueDate": "2024-09-09T00:00:00.000Z",
+                                    "amount": -36.54,
+                                    "balance": 2142.98,
+                                    "currency": "PEN",
+                                    "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf"
+                                },
+                                {
+                                    "title": "AB SERVICIOS SELECTA",
+                                    "accountingDate": "2024-09-09T08:10:20.000Z",
+                                    "valueDate": "2024-09-09T00:00:00.000Z",
+                                    "amount": -36.54,
+                                    "balance": 2142.98,
+                                    "currency": "PEN",
+                                    "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BulkTransactionalPredictionResponse"
+                                },
+                                "example": [
+                                    {
+                                        "id": "a950014f7badad3f4ffcb8fd",
+                                        "createDate": "2025-10-15T06:50:27.827Z",
+                                        "resolveDate": "2025-10-15T06:50:27.827Z",
+                                        "title": "Schoen - Christiansen",
+                                        "accountingDate": "2025-10-15T06:50:27.828Z",
+                                        "valueDate": "2025-10-15T06:50:27.828Z",
+                                        "amount": 990.13,
+                                        "balance": 4505.98,
+                                        "currency": "PEN",
+                                        "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf",
+                                        "predictions": {
+                                            "categorization": {
+                                                "categoryCode": 8160,
+                                                "category": "Ingresos / Ventas",
+                                                "subcategory": "Clientes"
+                                            },
+                                            "attributes": {
+                                                "transactionType": "OTRO",
+                                                "online": "NO",
+                                                "refund": "NO",
+                                                "paymentMethod": "NO",
+                                                "subscription": "NO"
+                                            },
+                                            "merchant": {
+                                                "merchantId": "04d6e41b56f91bdc0ada776a",
+                                                "merchantName": "Dibbert Inc",
+                                                "legalName": "Ferry LLC",
+                                                "logo": "https://s3.eu-west-3.amazonaws.com/com.coinscrap.dev.coco-merchant-pfm-es.public.common/logos/1101b89731eee6da98c9df2379b36ef04835dd1ba41dbe7b92d21927fbb21385.png",
+                                                "favicon": "https://s3.eu-west-3.amazonaws.com/com.coinscrap.dev.coco-merchant-pfm-es.public.common/logos/1101b89731eee6da98c9df2379b36ef04835dd1ba41dbe7b92d21927fbb21385.png",
+                                                "hasLogo": true,
+                                                "website": "https://firsthand-tribe.org",
+                                                "phone": 1,
+                                                "cnae": 55383,
+                                                "merchantType": null,
+                                                "specialization": null,
+                                                "specialtyId": "None",
+                                                "address": {
+                                                    "address": "70718 Smitham Mill",
+                                                    "postalCode": "84512",
+                                                    "locality": "Lake Dena"
+                                                },
+                                                "establishment": {
+                                                    "locality": "Aileenland",
+                                                    "coordinates": null,
+                                                    "address": "58278 W 12th Street",
+                                                    "postalCode": "92849-7819",
+                                                    "administrativeAreaL1": "Lincoln County",
+                                                    "administrativeAreaL2": null,
+                                                    "phone": "234-422-9075"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "headers": {}
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "webhooks": {},
+    "components": {
+        "schemas": {
+            "OAuthRequest": {
                 "type": "object",
                 "properties": {
-                  "grant_type": {
-                    "type": "string",
-                    "description": "oAuth Grant Type. Use `client_credentials`."
-                  },
-                  "client_id": {
-                    "type": "string"
-                  },
-                  "client_secret": {
-                    "type": "string"
-                  },
-                  "audience": {
-                    "type": "string",
-                    "format": "uri",
-                    "description": "URL audience for oAuth."
-                  }
+                    "grant_type": {
+                        "type": "string"
+                    },
+                    "client_id": {
+                        "type": "string"
+                    },
+                    "client_secret": {
+                        "type": "string"
+                    },
+                    "audience": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL audience for oAuth."
+                    }
                 },
                 "required": [
-                  "grant_type",
-                  "client_id",
-                  "client_secret",
-                  "audience"
+                    "grant_type",
+                    "client_secret",
+                    "client_id",
+                    "audience"
                 ]
-              },
-              "example": {
-                "client_id": "{{OAUTH_CLIENT_CLIENT_ID}}",
-                "client_secret": "{{OAUTH_CLIENT_CLIENT_SECRET}}",
-                "audience": "{{OAUTH_AUDIENCE}}",
-                "grant_type": "client_credentials"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
+            },
+            "OAuthResponse": {
+                "type": "object",
+                "properties": {
                     "access_token": {
-                      "type": "string"
+                        "type": "string"
                     },
                     "expires_in": {
-                      "type": "number"
+                        "type": "string"
                     },
                     "token_type": {
-                      "type": "string"
+                        "type": "string"
                     }
-                  },
-                  "required": [
+                },
+                "required": [
                     "access_token",
                     "expires_in",
                     "token_type"
-                  ]
-                },
-                "example": {
-                  "access_token": "ewogICJhbGciOiAiSFMyNTYiCn0.ewogICJzdWIiOiAiY3JuOnByb2plY3QtbmFtZTpkZXY6dXM6OjpzZXJ2aWNlcy94LXByb2plY3QtbmFtZSIsCiAgImV4cCI6IDE3MjgzMDg3ODcKfQ.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30",
-                  "expires_in": 3600,
-                  "token_type": "Bearer"
-                }
-              }
-            },
-            "headers": {}
-          }
-        },
-        "security": []
-      }
-    },
-    "/coco/transactional-predictions": {
-      "post": {
-        "summary": "Transactional prediction",
-        "deprecated": false,
-        "description": "This request allows the inference of the COCO transactional predictions. It returns the original transaction enriched with COCO predictions.",
-        "tags": [
-          "Predictions"
-        ],
-        "parameters": [
-          {
-            "name": "cocos",
-            "in": "query",
-            "description": "Requested COCO predictions, comma separated.",
-            "required": false,
-            "example": "categorization,merchant",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "identifier": {
-                    "type": "string"
-                  },
-                  "title": {
-                    "type": "string"
-                  },
-                  "accountingDate": {
-                    "type": "string",
-                    "format": "date-time"
-                  },
-                  "valueDate": {
-                    "type": "string",
-                    "format": "date-time"
-                  },
-                  "amount": {
-                    "type": "number"
-                  },
-                  "balance": {
-                    "type": "number"
-                  },
-                  "currency": {
-                    "type": "string"
-                  },
-                  "categoryId": {
-                    "type": "string"
-                  },
-                  "documentUrl": {
-                    "type": "string"
-                  },
-                  "merchant": {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "code": {
-                        "type": "string"
-                      },
-                      "city": {
-                        "type": "string"
-                      },
-                      "country": {
-                        "type": "string"
-                      },
-                      "mcc": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "additionalData": {
-                    "type": "object",
-                    "properties": {}
-                  }
-                },
-                "required": [
-                  "identifier",
-                  "title",
-                  "accountingDate",
-                  "valueDate",
-                  "amount",
-                  "balance",
-                  "currency"
                 ]
-              },
-              "example": {
-                "title": "7 eleven anaxagoras",
-                "accountingDate": "2024-09-09T08:10:20.000Z",
-                "valueDate": "2024-09-09T00:00:00.000Z",
-                "amount": -36.54,
-                "balance": 2142.98,
-                "currency": "PEN",
-                "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "createDate": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "resolveDate": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "title": {
-                      "type": "string"
-                    },
-                    "accountingDate": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "valueDate": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "amount": {
-                      "type": "number"
-                    },
-                    "balance": {
-                      "type": "number"
-                    },
-                    "currency": {
-                      "type": "string"
-                    },
-                    "documentUrl": {
-                      "type": "string"
-                    },
-                    "predictions": {
-                      "$ref": "#/components/schemas/PredictionsResponse"
-                    }
-                  },
-                  "required": [
-                    "predictions",
-                    "id",
-                    "createDate",
-                    "resolveDate",
-                    "title",
-                    "accountingDate",
-                    "valueDate",
-                    "amount",
-                    "balance",
-                    "currency",
-                    "documentUrl"
-                  ]
-                },
-                "example": {
-                  "id": "68efa2c74581d0efe5adedee",
-                  "createDate": "2025-10-15T13:33:59.760Z",
-                  "resolveDate": "2025-10-15T13:34:00.136Z",
-                  "tenantId": "{tenant}",
-                  "trackId": "df5c7872-715b-4d0c-9185-2269c73f872c",
-                  "title": "AB SERVICIOS SELECTA",
-                  "accountingDate": "2024-09-09T08:10:20.000Z",
-                  "valueDate": "2024-09-09T00:00:00.000Z",
-                  "amount": -36.54,
-                  "balance": 2142.98,
-                  "currency": "PEN",
-                  "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf",
-                  "predictions": {
-                    "categorization": {
-                      "categoryCode": 5510,
-                      "category": "automóvil y transporte",
-                      "subcategory": "gasolineras"
-                    },
-                    "merchant": {
-                      "merchantId": null,
-                      "merchantName": null,
-                      "legalName": null,
-                      "logo": "https://s3.eu-west-3.amazonaws.com/com.coinscrap.dev.coco-merchant-pfm-es.public.common/logos/915f6aad5f9ac88c95935b3b33a23080aad82449c69de731aaf3444ea05989ce.png",
-                      "favicon": "https://s3.eu-west-3.amazonaws.com/com.coinscrap.dev.coco-merchant-pfm-es.public.common/logos/915f6aad5f9ac88c95935b3b33a23080aad82449c69de731aaf3444ea05989ce.png",
-                      "hasLogo": false,
-                      "website": null,
-                      "phone": null,
-                      "cnae": null,
-                      "merchantType": null,
-                      "specialization": null,
-                      "specialtyId": null,
-                      "address": {
-                        "locality": null,
-                        "address": null,
-                        "postalCode": null
-                      },
-                      "establishment": {
-                        "locality": null,
-                        "coordinates": null,
-                        "address": null,
-                        "postalCode": null,
-                        "administrativeAreaL1": null,
-                        "administrativeAreaL2": null,
-                        "phone": null
-                      }
-                    }
-                  }
-                }
-              }
             },
-            "headers": {}
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/coco/transactional-predictions/bulk": {
-      "post": {
-        "summary": "Bulk transactional prediction",
-        "deprecated": false,
-        "description": "This request creates multiple transactional predictions in a single call.",
-        "tags": [
-          "Predictions"
-        ],
-        "parameters": [
-          {
-            "name": "cocos",
-            "in": "query",
-            "description": "Requested COCO predictions, comma separated.",
-            "required": false,
-            "example": "categorization,merchant",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
+            "BulkTransactionalPredictionRequest": {
                 "type": "array",
                 "items": {
-                  "type": "object",
-                  "properties": {
+                    "$ref": "#/components/schemas/TransactionalPredictionRequest"
+                }
+            },
+            "BulkTransactionalPredictionResponse": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "createDate": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "resolveDate": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "title": {
+                            "type": "string"
+                        },
+                        "accountingDate": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "valueDate": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "amount": {
+                            "type": "number"
+                        },
+                        "balance": {
+                            "type": "number"
+                        },
+                        "currency": {
+                            "type": "string"
+                        },
+                        "documentUrl": {
+                            "type": "string"
+                        },
+                        "predictions": {
+                            "$ref": "#/components/schemas/PredictionsResponse"
+                        }
+                    },
+                    "required": [
+                        "predictions",
+                        "id",
+                        "createDate",
+                        "resolveDate",
+                        "title",
+                        "accountingDate",
+                        "valueDate",
+                        "amount",
+                        "balance",
+                        "currency",
+                        "documentUrl"
+                    ]
+                }
+            },
+            "TransactionalPredictionRequest": {
+                "type": "object",
+                "properties": {
                     "id": {
-                      "type": "string"
+                        "type": "string"
                     },
                     "createDate": {
-                      "type": "string"
+                        "type": "string",
+                        "format": "date-time"
                     },
                     "resolveDate": {
-                      "type": "string"
+                        "type": "string",
+                        "format": "date-time"
                     },
                     "title": {
-                      "type": "string"
+                        "type": "string"
                     },
                     "accountingDate": {
-                      "type": "string"
+                        "type": "string",
+                        "format": "date-time"
                     },
                     "valueDate": {
-                      "type": "string"
+                        "type": "string",
+                        "format": "date-time"
                     },
                     "amount": {
-                      "type": "number"
+                        "type": "number"
                     },
                     "balance": {
-                      "type": "number"
+                        "type": "number"
                     },
                     "currency": {
-                      "type": "string"
+                        "type": "string"
                     },
                     "documentUrl": {
-                      "type": "string"
+                        "type": "string"
                     }
-                  },
-                  "required": [
+                },
+                "required": [
                     "id",
                     "createDate",
                     "resolveDate",
@@ -396,861 +656,582 @@
                     "balance",
                     "currency",
                     "documentUrl"
-                  ]
-                }
-              },
-              "example": [
-                {
-                  "title": "AB SERVICIOS SELECTA",
-                  "accountingDate": "2024-09-09T08:10:20.000Z",
-                  "valueDate": "2024-09-09T00:00:00.000Z",
-                  "amount": -36.54,
-                  "balance": 2142.98,
-                  "currency": "PEN",
-                  "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf"
+                ]
+            },
+            "TransactionalPredictionResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "createDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "resolveDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "accountingDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "valueDate": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "documentUrl": {
+                        "type": "string"
+                    },
+                    "predictions": {
+                        "type": "object",
+                        "properties": {
+                            "categorization": {
+                                "type": "object",
+                                "properties": {
+                                    "categoryCode": {
+                                        "type": "integer"
+                                    },
+                                    "category": {
+                                        "type": "string"
+                                    },
+                                    "subcategory": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "categoryCode",
+                                    "category",
+                                    "subcategory"
+                                ]
+                            },
+                            "merchant": {
+                                "type": "object",
+                                "properties": {
+                                    "hasLogo": {
+                                        "type": "boolean"
+                                    },
+                                    "logo": {
+                                        "type": "string"
+                                    },
+                                    "specialization": {
+                                        "type": "null"
+                                    },
+                                    "merchantName": {
+                                        "type": "string"
+                                    },
+                                    "specialtyId": {
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "type": "null"
+                                    },
+                                    "address": {
+                                        "type": "object",
+                                        "properties": {
+                                            "address": {
+                                                "type": "null"
+                                            },
+                                            "postalCode": {
+                                                "type": "null"
+                                            },
+                                            "locality": {
+                                                "type": "null"
+                                            }
+                                        },
+                                        "required": [
+                                            "address",
+                                            "postalCode",
+                                            "locality"
+                                        ]
+                                    },
+                                    "favicon": {
+                                        "type": "string"
+                                    },
+                                    "legalName": {
+                                        "type": "string"
+                                    },
+                                    "website": {
+                                        "type": "null"
+                                    },
+                                    "cnae": {
+                                        "type": "null"
+                                    },
+                                    "merchantType": {
+                                        "type": "null"
+                                    },
+                                    "establishment": {
+                                        "type": "object",
+                                        "properties": {
+                                            "administrativeAreaL1": {
+                                                "type": "null"
+                                            },
+                                            "address": {
+                                                "type": "null"
+                                            },
+                                            "postalCode": {
+                                                "type": "null"
+                                            },
+                                            "coordinates": {
+                                                "type": "null"
+                                            },
+                                            "locality": {
+                                                "type": "null"
+                                            },
+                                            "phone": {
+                                                "type": "null"
+                                            },
+                                            "administrativeAreaL2": {
+                                                "type": "null"
+                                            }
+                                        },
+                                        "required": [
+                                            "administrativeAreaL1",
+                                            "address",
+                                            "postalCode",
+                                            "coordinates",
+                                            "locality",
+                                            "phone",
+                                            "administrativeAreaL2"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "hasLogo",
+                                    "logo",
+                                    "specialization",
+                                    "merchantName",
+                                    "specialtyId",
+                                    "phone",
+                                    "address",
+                                    "favicon",
+                                    "legalName",
+                                    "website",
+                                    "cnae",
+                                    "merchantType",
+                                    "establishment"
+                                ]
+                            },
+                            "cashback": {
+                                "type": "object",
+                                "properties": {
+                                    "additionalFields": {
+                                        "type": "object",
+                                        "properties": {}
+                                    },
+                                    "merchantName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "additionalFields",
+                                    "merchantName"
+                                ]
+                            },
+                            "cfp": {
+                                "type": "object",
+                                "properties": {
+                                    "co2": {
+                                        "type": "number",
+                                        "description": "Huella de carbono"
+                                    },
+                                    "ch4": {
+                                        "type": "number"
+                                    },
+                                    "n2o": {
+                                        "type": "number",
+                                        "description": "Óxido nitroso"
+                                    },
+                                    "h2o": {
+                                        "type": "number",
+                                        "description": "Agua"
+                                    }
+                                },
+                                "required": [
+                                    "co2",
+                                    "ch4",
+                                    "n2o",
+                                    "h2o"
+                                ]
+                            },
+                            "transfer": {
+                                "type": "object",
+                                "properties": {
+                                    "me": {
+                                        "type": "string",
+                                        "description": "Indica si el usuario es emisor  o receptor"
+                                    },
+                                    "sender": {
+                                        "type": "string",
+                                        "description": "Identifica el emisor  de la transferencia"
+                                    },
+                                    "recipient": {
+                                        "type": "string",
+                                        "description": "Identifica el receptor de la transferencia"
+                                    }
+                                },
+                                "required": [
+                                    "me",
+                                    "sender",
+                                    "recipient"
+                                ]
+                            },
+                            "attributes": {
+                                "type": "object",
+                                "properties": {
+                                    "transaction_type": {
+                                        "type": "string"
+                                    },
+                                    "subscription": {
+                                        "type": "string"
+                                    },
+                                    "paymentMethod": {
+                                        "type": "string"
+                                    },
+                                    "refund": {
+                                        "type": "string"
+                                    },
+                                    "online": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "transaction_type",
+                                    "online",
+                                    "refund",
+                                    "paymentMethod",
+                                    "subscription"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "categorization",
+                            "attributes",
+                            "merchant",
+                            "cashback",
+                            "cfp",
+                            "transfer"
+                        ],
+                        "description": "Predicciones de los COCOs"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "properties": {
+                            "categorization": {
+                                "type": "object",
+                                "properties": {
+                                    "method": {
+                                        "type": "string",
+                                        "description": "Método final por el que ha salido la categoría"
+                                    },
+                                    "stages": {
+                                        "type": [
+                                            "string",
+                                            "integer",
+                                            "boolean",
+                                            "array",
+                                            "object",
+                                            "number",
+                                            "null"
+                                        ],
+                                        "description": "Salida por cada paso de la categorización"
+                                    }
+                                },
+                                "required": [
+                                    "method",
+                                    "stages"
+                                ]
+                            },
+                            "merchant": {
+                                "type": "object",
+                                "properties": {
+                                    "score": {
+                                        "type": "number",
+                                        "description": "EL scoring al detectar al merchant"
+                                    },
+                                    "establishmentScore": {
+                                        "type": "number",
+                                        "description": "EL scoring al detectar al merchant"
+                                    },
+                                    "cleanTitle": {
+                                        "type": "string",
+                                        "description": "El título limpio con el que se hizo la búsqueda."
+                                    },
+                                    "index": {
+                                        "type": "string",
+                                        "description": "El índice de elastic sobre el que ha realizado la búsqueda"
+                                    }
+                                },
+                                "required": [
+                                    "score",
+                                    "index",
+                                    "cleanTitle",
+                                    "establishmentScore"
+                                ]
+                            },
+                            "cashback": {
+                                "type": "object",
+                                "properties": {
+                                    "accuracy": {
+                                        "type": "string",
+                                        "description": "¿Existe algo como accuracy en Elastic?"
+                                    }
+                                },
+                                "required": [
+                                    "accuracy"
+                                ]
+                            },
+                            "cfp": {
+                                "type": "object",
+                                "properties": {
+                                    "consumption": {
+                                        "type": "number"
+                                    },
+                                    "priceDay": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "consumption",
+                                    "priceDay"
+                                ]
+                            }
+                        },
+                        "description": "Metadatos de la predicción",
+                        "required": [
+                            "categorization",
+                            "merchant",
+                            "cashback",
+                            "cfp"
+                        ]
+                    }
                 },
-                {
-                  "title": "AB SERVICIOS SELECTA",
-                  "accountingDate": "2024-09-09T08:10:20.000Z",
-                  "valueDate": "2024-09-09T00:00:00.000Z",
-                  "amount": -36.54,
-                  "balance": 2142.98,
-                  "currency": "PEN",
-                  "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf"
+                "required": [
+                    "predictions",
+                    "metadata",
+                    "id",
+                    "createDate",
+                    "resolveDate",
+                    "title",
+                    "accountingDate",
+                    "valueDate",
+                    "amount",
+                    "balance",
+                    "currency",
+                    "documentUrl"
+                ]
+            },
+            "PredictionsResponse": {
+                "type": "object",
+                "properties": {
+                    "categorization": {
+                        "type": "object",
+                        "properties": {
+                            "categoryCode": {
+                                "type": "integer"
+                            },
+                            "category": {
+                                "type": "string"
+                            },
+                            "subcategory": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "categoryCode",
+                            "category",
+                            "subcategory"
+                        ]
+                    },
+                    "attributes": {
+                        "type": "object",
+                        "properties": {
+                            "transactionType": {
+                                "type": "string"
+                            },
+                            "online": {
+                                "type": "string"
+                            },
+                            "refund": {
+                                "type": "string"
+                            },
+                            "paymentMethod": {
+                                "type": "string"
+                            },
+                            "subscription": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "transactionType",
+                            "online",
+                            "refund",
+                            "paymentMethod",
+                            "subscription"
+                        ]
+                    },
+                    "merchant": {
+                        "type": "object",
+                        "properties": {
+                            "merchantId": {
+                                "type": "string"
+                            },
+                            "merchantName": {
+                                "type": "string"
+                            },
+                            "legalName": {
+                                "type": "string"
+                            },
+                            "logo": {
+                                "type": "string"
+                            },
+                            "favicon": {
+                                "type": "string"
+                            },
+                            "hasLogo": {
+                                "type": "boolean"
+                            },
+                            "website": {
+                                "type": "string"
+                            },
+                            "phone": {
+                                "type": "number"
+                            },
+                            "cnae": {
+                                "type": "number"
+                            },
+                            "merchantType": {
+                                "type": "null"
+                            },
+                            "specialization": {
+                                "type": "null"
+                            },
+                            "specialtyId": {
+                                "type": "string"
+                            },
+                            "address": {
+                                "type": "object",
+                                "properties": {
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "postalCode": {
+                                        "type": "string"
+                                    },
+                                    "locality": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "address",
+                                    "postalCode",
+                                    "locality"
+                                ]
+                            },
+                            "establishment": {
+                                "type": "object",
+                                "properties": {
+                                    "locality": {
+                                        "type": "string"
+                                    },
+                                    "coordinates": {
+                                        "type": "null"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "postalCode": {
+                                        "type": "string"
+                                    },
+                                    "administrativeAreaL1": {
+                                        "type": "string"
+                                    },
+                                    "administrativeAreaL2": {
+                                        "type": "null"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "administrativeAreaL1",
+                                    "address",
+                                    "postalCode",
+                                    "coordinates",
+                                    "locality",
+                                    "phone",
+                                    "administrativeAreaL2"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "hasLogo",
+                            "logo",
+                            "merchantName",
+                            "favicon",
+                            "legalName",
+                            "website",
+                            "cnae",
+                            "merchantType",
+                            "establishment",
+                            "address",
+                            "specialtyId",
+                            "merchantId"
+                        ]
+                    }
                 },
-                {
-                  "title": "AB SERVICIOS SELECTA",
-                  "accountingDate": "2024-09-09T08:10:20.000Z",
-                  "valueDate": "2024-09-09T00:00:00.000Z",
-                  "amount": -36.54,
-                  "balance": 2142.98,
-                  "currency": "PEN",
-                  "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf"
-                }
-              ]
+                "title": "",
+                "required": [
+                    "categorization",
+                    "attributes",
+                    "merchant"
+                ]
             }
-          }
         },
         "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BulkTransactionalPredictionResponse"
-                },
-                "example": [
-                  {
-                    "id": "a950014f7badad3f4ffcb8fd",
-                    "createDate": "2025-10-15T06:50:27.827Z",
-                    "resolveDate": "2025-10-15T06:50:27.827Z",
-                    "title": "Schoen - Christiansen",
-                    "accountingDate": "2025-10-15T06:50:27.828Z",
-                    "valueDate": "2025-10-15T06:50:27.828Z",
-                    "amount": 990.13,
-                    "balance": 4505.98,
-                    "currency": "PEN",
-                    "documentUrl": "https://ucageneral.com/forms/Sample-Premium-Invoice.pdf",
-                    "predictions": {
-                      "categorization": {
-                        "categoryCode": 8160,
-                        "category": "Ingresos / Ventas",
-                        "subcategory": "Clientes"
-                      },
-                      "attributes": {
-                        "transactionType": "OTRO",
-                        "online": "NO",
-                        "refund": "NO",
-                        "paymentMethod": "NO",
-                        "subscription": "NO"
-                      },
-                      "merchant": {
-                        "merchantId": "04d6e41b56f91bdc0ada776a",
-                        "merchantName": "Dibbert Inc",
-                        "legalName": "Ferry LLC",
-                        "logo": "https://s3.eu-west-3.amazonaws.com/com.coinscrap.dev.coco-merchant-pfm-es.public.common/logos/1101b89731eee6da98c9df2379b36ef04835dd1ba41dbe7b92d21927fbb21385.png",
-                        "favicon": "https://s3.eu-west-3.amazonaws.com/com.coinscrap.dev.coco-merchant-pfm-es.public.common/logos/1101b89731eee6da98c9df2379b36ef04835dd1ba41dbe7b92d21927fbb21385.png",
-                        "hasLogo": true,
-                        "website": "https://firsthand-tribe.org",
-                        "phone": 1,
-                        "cnae": 55383,
-                        "merchantType": null,
-                        "specialization": null,
-                        "specialtyId": "None",
-                        "address": {
-                          "address": "70718 Smitham Mill",
-                          "postalCode": "84512",
-                          "locality": "Lake Dena"
-                        },
-                        "establishment": {
-                          "locality": "Aileenland",
-                          "coordinates": null,
-                          "address": "58278 W 12th Street",
-                          "postalCode": "92849-7819",
-                          "administrativeAreaL1": "Lincoln County",
-                          "administrativeAreaL2": null,
-                          "phone": "234-422-9075"
+            "Error response": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "title": "",
+                            "type": "object",
+                            "properties": {
+                                "error_type": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "error_type"
+                            ]
                         }
-                      }
                     }
-                  }
-                ]
-              }
-            },
-            "headers": {}
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    }
-  },
-  "webhooks": {},
-  "components": {
-    "schemas": {
-      "OAuthRequest": {
-        "type": "object",
-        "properties": {
-          "grant_type": {
-            "type": "string"
-          },
-          "client_id": {
-            "type": "string"
-          },
-          "client_secret": {
-            "type": "string"
-          },
-          "audience": {
-            "type": "string",
-            "format": "uri",
-            "description": "URL audience for oAuth."
-          }
-        },
-        "required": [
-          "grant_type",
-          "client_secret",
-          "client_id",
-          "audience"
-        ]
-      },
-      "OAuthResponse": {
-        "type": "object",
-        "properties": {
-          "access_token": {
-            "type": "string"
-          },
-          "expires_in": {
-            "type": "string"
-          },
-          "token_type": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "access_token",
-          "expires_in",
-          "token_type"
-        ]
-      },
-      "BulkTransactionalPredictionRequest": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/TransactionalPredictionRequest"
-        }
-      },
-      "BulkTransactionalPredictionResponse": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            },
-            "createDate": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "resolveDate": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "title": {
-              "type": "string"
-            },
-            "accountingDate": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "valueDate": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "amount": {
-              "type": "number"
-            },
-            "balance": {
-              "type": "number"
-            },
-            "currency": {
-              "type": "string"
-            },
-            "documentUrl": {
-              "type": "string"
-            },
-            "predictions": {
-              "$ref": "#/components/schemas/PredictionsResponse"
-            }
-          },
-          "required": [
-            "predictions",
-            "id",
-            "createDate",
-            "resolveDate",
-            "title",
-            "accountingDate",
-            "valueDate",
-            "amount",
-            "balance",
-            "currency",
-            "documentUrl"
-          ]
-        }
-      },
-      "TransactionalPredictionRequest": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "createDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "resolveDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "title": {
-            "type": "string"
-          },
-          "accountingDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "valueDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "amount": {
-            "type": "number"
-          },
-          "balance": {
-            "type": "number"
-          },
-          "currency": {
-            "type": "string"
-          },
-          "documentUrl": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "createDate",
-          "resolveDate",
-          "title",
-          "accountingDate",
-          "valueDate",
-          "amount",
-          "balance",
-          "currency",
-          "documentUrl"
-        ]
-      },
-      "TransactionalPredictionResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "createDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "resolveDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "title": {
-            "type": "string"
-          },
-          "accountingDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "valueDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "amount": {
-            "type": "number"
-          },
-          "balance": {
-            "type": "number"
-          },
-          "currency": {
-            "type": "string"
-          },
-          "documentUrl": {
-            "type": "string"
-          },
-          "predictions": {
-            "type": "object",
-            "properties": {
-              "categorization": {
-                "type": "object",
-                "properties": {
-                  "categoryCode": {
-                    "type": "integer"
-                  },
-                  "category": {
-                    "type": "string"
-                  },
-                  "subcategory": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "categoryCode",
-                  "category",
-                  "subcategory"
-                ]
-              },
-              "merchant": {
-                "type": "object",
-                "properties": {
-                  "hasLogo": {
-                    "type": "boolean"
-                  },
-                  "logo": {
-                    "type": "string"
-                  },
-                  "specialization": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "merchantName": {
-                    "type": "string"
-                  },
-                  "specialtyId": {
-                    "type": "string"
-                  },
-                  "phone": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "address": {
-                    "type": "object",
-                    "properties": {
-                      "address": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "postalCode": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "locality": {
-                        "type": "string",
-                        "nullable": true
-                      }
-                    },
-                    "required": [
-                      "address",
-                      "postalCode",
-                      "locality"
-                    ]
-                  },
-                  "favicon": {
-                    "type": "string"
-                  },
-                  "legalName": {
-                    "type": "string"
-                  },
-                  "website": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "cnae": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "merchantType": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "establishment": {
-                    "type": "object",
-                    "properties": {
-                      "administrativeAreaL1": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "address": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "postalCode": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "coordinates": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "locality": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "phone": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "administrativeAreaL2": {
-                        "type": "string",
-                        "nullable": true
-                      }
-                    },
-                    "required": [
-                      "administrativeAreaL1",
-                      "address",
-                      "postalCode",
-                      "coordinates",
-                      "locality",
-                      "phone",
-                      "administrativeAreaL2"
-                    ]
-                  }
-                },
-                "required": [
-                  "hasLogo",
-                  "logo",
-                  "specialization",
-                  "merchantName",
-                  "specialtyId",
-                  "phone",
-                  "address",
-                  "favicon",
-                  "legalName",
-                  "website",
-                  "cnae",
-                  "merchantType",
-                  "establishment"
-                ]
-              },
-              "cashback": {
-                "type": "object",
-                "properties": {
-                  "additionalFields": {
-                    "type": "object",
-                    "properties": {}
-                  },
-                  "merchantName": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "additionalFields",
-                  "merchantName"
-                ]
-              },
-              "cfp": {
-                "type": "object",
-                "properties": {
-                  "co2": {
-                    "type": "number",
-                    "description": "Huella de carbono"
-                  },
-                  "ch4": {
-                    "type": "number"
-                  },
-                  "n2o": {
-                    "type": "number",
-                    "description": "Óxido nitroso"
-                  },
-                  "h2o": {
-                    "type": "number",
-                    "description": "Agua"
-                  }
-                },
-                "required": [
-                  "co2",
-                  "ch4",
-                  "n2o",
-                  "h2o"
-                ]
-              },
-              "transfer": {
-                "type": "object",
-                "properties": {
-                  "me": {
-                    "type": "string",
-                    "description": "Indica si el usuario es emisor  o receptor"
-                  },
-                  "sender": {
-                    "type": "string",
-                    "description": "Identifica el emisor  de la transferencia"
-                  },
-                  "recipient": {
-                    "type": "string",
-                    "description": "Identifica el receptor de la transferencia"
-                  }
-                },
-                "required": [
-                  "me",
-                  "sender",
-                  "recipient"
-                ]
-              },
-              "attributes": {
-                "type": "object",
-                "properties": {
-                  "transaction_type": {
-                    "type": "string"
-                  },
-                  "subscription": {
-                    "type": "string"
-                  },
-                  "paymentMethod": {
-                    "type": "string"
-                  },
-                  "refund": {
-                    "type": "string"
-                  },
-                  "online": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "transaction_type",
-                  "online",
-                  "refund",
-                  "paymentMethod",
-                  "subscription"
-                ]
-              }
-            },
-            "required": [
-              "categorization",
-              "attributes",
-              "merchant",
-              "cashback",
-              "cfp",
-              "transfer"
-            ],
-            "description": "Predicciones de los COCOs"
-          },
-          "metadata": {
-            "type": "object",
-            "properties": {
-              "categorization": {
-                "type": "object",
-                "properties": {
-                  "method": {
-                    "type": "string",
-                    "description": "Método final por el que ha salido la categoría"
-                  },
-                  "stages": {
-                    "description": "Salida por cada paso de la categorización"
-                  }
-                },
-                "required": [
-                  "method",
-                  "stages"
-                ]
-              },
-              "merchant": {
-                "type": "object",
-                "properties": {
-                  "score": {
-                    "type": "number",
-                    "description": "EL scoring al detectar al merchant"
-                  },
-                  "establishmentScore": {
-                    "type": "number",
-                    "description": "EL scoring al detectar al merchant"
-                  },
-                  "cleanTitle": {
-                    "type": "string",
-                    "description": "El título limpio con el que se hizo la búsqueda."
-                  },
-                  "index": {
-                    "type": "string",
-                    "description": "El índice de elastic sobre el que ha realizado la búsqueda"
-                  }
-                },
-                "required": [
-                  "score",
-                  "index",
-                  "cleanTitle",
-                  "establishmentScore"
-                ]
-              },
-              "cashback": {
-                "type": "object",
-                "properties": {
-                  "accuracy": {
-                    "type": "string",
-                    "description": "¿Existe algo como accuracy en Elastic?"
-                  }
-                },
-                "required": [
-                  "accuracy"
-                ]
-              },
-              "cfp": {
-                "type": "object",
-                "properties": {
-                  "consumption": {
-                    "type": "number"
-                  },
-                  "priceDay": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "consumption",
-                  "priceDay"
-                ]
-              }
-            },
-            "description": "Metadatos de la predicción",
-            "required": [
-              "categorization",
-              "merchant",
-              "cashback",
-              "cfp"
-            ]
-          }
-        },
-        "required": [
-          "predictions",
-          "metadata",
-          "id",
-          "createDate",
-          "resolveDate",
-          "title",
-          "accountingDate",
-          "valueDate",
-          "amount",
-          "balance",
-          "currency",
-          "documentUrl"
-        ]
-      },
-      "PredictionsResponse": {
-        "type": "object",
-        "properties": {
-          "categorization": {
-            "type": "object",
-            "properties": {
-              "categoryCode": {
-                "type": "integer"
-              },
-              "category": {
-                "type": "string"
-              },
-              "subcategory": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "categoryCode",
-              "category",
-              "subcategory"
-            ]
-          },
-          "attributes": {
-            "type": "object",
-            "properties": {
-              "transactionType": {
-                "type": "string"
-              },
-              "online": {
-                "type": "string"
-              },
-              "refund": {
-                "type": "string"
-              },
-              "paymentMethod": {
-                "type": "string"
-              },
-              "subscription": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "transactionType",
-              "online",
-              "refund",
-              "paymentMethod",
-              "subscription"
-            ]
-          },
-          "merchant": {
-            "type": "object",
-            "properties": {
-              "merchantId": {
-                "type": "string"
-              },
-              "merchantName": {
-                "type": "string"
-              },
-              "legalName": {
-                "type": "string"
-              },
-              "logo": {
-                "type": "string"
-              },
-              "favicon": {
-                "type": "string"
-              },
-              "hasLogo": {
-                "type": "boolean"
-              },
-              "website": {
-                "type": "string"
-              },
-              "phone": {
-                "type": "number"
-              },
-              "cnae": {
-                "type": "number"
-              },
-              "merchantType": {
-                "type": "string",
-                "nullable": true
-              },
-              "specialization": {
-                "type": "string",
-                "nullable": true
-              },
-              "specialtyId": {
-                "type": "string"
-              },
-              "address": {
-                "type": "object",
-                "properties": {
-                  "address": {
-                    "type": "string"
-                  },
-                  "postalCode": {
-                    "type": "string"
-                  },
-                  "locality": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "address",
-                  "postalCode",
-                  "locality"
-                ]
-              },
-              "establishment": {
-                "type": "object",
-                "properties": {
-                  "locality": {
-                    "type": "string"
-                  },
-                  "coordinates": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "address": {
-                    "type": "string"
-                  },
-                  "postalCode": {
-                    "type": "string"
-                  },
-                  "administrativeAreaL1": {
-                    "type": "string"
-                  },
-                  "administrativeAreaL2": {
-                    "type": "string",
-                    "nullable": true
-                  },
-                  "phone": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "administrativeAreaL1",
-                  "address",
-                  "postalCode",
-                  "coordinates",
-                  "locality",
-                  "phone",
-                  "administrativeAreaL2"
-                ]
-              }
-            },
-            "required": [
-              "hasLogo",
-              "logo",
-              "merchantName",
-              "favicon",
-              "legalName",
-              "website",
-              "cnae",
-              "merchantType",
-              "establishment",
-              "address",
-              "specialtyId",
-              "merchantId"
-            ]
-          }
-        },
-        "required": [
-          "categorization",
-          "attributes",
-          "merchant"
-        ]
-      }
-    },
-    "responses": {
-      "ErrorResponse": {
-        "description": "Error response",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "error_type": {
-                  "type": "string"
                 }
-              },
-              "required": [
-                "error_type"
-              ]
             }
-          }
+        },
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "scheme": "bearer"
+            }
         }
-      }
     },
-    "securitySchemes": {
-      "bearer": {
-        "type": "http",
-        "scheme": "bearer"
-      }
-    }
-  },
-  "security": [
-    {
-      "bearer": []
-    }
-  ]
+    "servers": [],
+    "security": [
+        {
+            "bearer": []
+        }
+    ]
 }
